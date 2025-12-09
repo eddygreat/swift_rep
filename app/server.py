@@ -21,6 +21,11 @@ class ChatRequest(BaseModel):
     message: str
     thread_id: str
 
+@app.get("/")
+async def health_check():
+    """Health check endpoint for Render."""
+    return {"status": "ok"}
+
 @app.post("/chat")
 async def chat_endpoint(request: ChatRequest):
     """
@@ -49,6 +54,8 @@ async def chat_endpoint(request: ChatRequest):
         return {"response": last_message.content}
     
     except Exception as e:
+        # Log the full error for debugging in Render logs
+        print(f"ERROR: {str(e)}")
         # In a real production app, we would log the error and return a more specific message
         raise HTTPException(status_code=500, detail=str(e))
 
